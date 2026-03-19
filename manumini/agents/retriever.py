@@ -1,42 +1,30 @@
 from __future__ import annotations
 from manumini.llm import LLM
-import requests
+from selenium import webdriver
+import time
 
-COMMON_WORDS = ["you","the","of","do","known"]
+COMMON_WORDS = ["you","the","of","do","known","is","what","are","has","have"]
 
 class Retriever:
-    SYSTEM = "You are a wise advisor, you must know everything before taking a decision."
+    SYSTEM = "You are a wise advisor, you must know everything before taking a decision. \
+    You must answer with words extracted from the user request only."
 
     def __init__(self, model : str) -> Retriever:
         self.model = model
         # self.parser = parser
 
     def RetriveFromPrompt(self,prompt : str) -> str:
-        rich_prompt = f"What are the key concepts or proper nouns in the following text: \
-        ```plaintext\n{prompt}\n```\n. "
+        rich_prompt = f"Extract the specific keywords from the following text: \
+        ```plaintext\n{prompt}\n```\n"
 
-        with LLM.send(self.model,prompt,Retriever.SYSTEM,True) as response:
-            assistant_words = LLM.printResponseStream(response).lower()
+        research = ""
+        for i in range(5):
+            with LLM.send(self.model,rich_prompt,Retriever.SYSTEM,True) as response:
+                research += LLM.printResponseStream(response)
         
-        assistant_words = ''.join(char for char in assistant_words if char.isalnum() or char == " " or char == "\n")
-        assistant_words =  assistant_words.split(" ")
+        url = f'https://duckduckgo.com/?ia=web&origin=funnel_home_google&t=h_&q="{research.replace(" ","+")}"'
 
-        prompt_words = prompt.lower()
-        prompt_words = ''.join(char for char in prompt_words if char.isalnum() or char == " " or char == "\n")
-        prompt_words = prompt_words.split(" ")
-        
-        keywords = {}
-        for word in prompt_words:
-            if word in COMMON_WORDS:
-                continue
-            if word in assistant_words:
-                if word in keywords:
-                    keywords[word] += 1
-                else:
-                    keywords[word] = 1
-
-        print(keywords)
-        
-
-
-        # url = f'https://www.google.com/search?q="{keywords.replace(" ","+")}"'
+        driver = webdriver.Chrome()  # Optional argument, if not specified will search path.
+        result = driver.get(url)
+        print(dir())
+        driver.quit()

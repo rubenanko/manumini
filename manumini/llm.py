@@ -38,6 +38,7 @@ class LLM:
                 chunk = data.get("response", "")
                 text += chunk
                 print(chunk,end="",flush=True)
+        print("")
         return text
 
     def feed(prompt):
