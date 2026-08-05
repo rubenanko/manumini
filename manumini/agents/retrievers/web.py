@@ -28,7 +28,7 @@ class WebRetriever:
         research = ""
         for _ in range(5):
             with LLM.send(self.model,rich_prompt,WebRetriever.SYSTEM_SEARCH,False) as response:
-                research += f"{response.json().get("response","")} "
+                research += f'{response.json().get("response","")} '
         
         url = WebRetriever.RESEARCH_URL.format(research=research.replace(" ","+"))
 

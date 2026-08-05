@@ -1,0 +1,44 @@
+the main.py file is a python script that implements an agentic workflow system. here's a breakdown of its key components and functionality:
+
+1. **imports and setup**:
+   - imports various modules from the manumini package including llm, retrievers, agents, and tools
+   - uses argparse to handle command-line arguments (expecting a 'prompt' argument)
+   - sets up two model options (commented out gemma4:e2b and active mistral-small-latest)
+
+2. **main workflow**:
+   - the script processes a user prompt through a task queue system
+   - it maintains a memory variable that tracks the conversation history and task context
+   - uses a while loop to process tasks until the queue is empty
+
+3. **task management**:
+   - breaks down complex tasks into subtasks using build_plan()
+   - determines if tasks are atomic (can be executed directly) or need further planning
+   - handles task termination conditions
+
+4. **execution flow**:
+   - for atomic tasks:
+     - checks if user feedback is needed (needs_user_feedback())
+     - builds and executes bash commands (build_bash_command() + bash())
+     - tracks execution results in memory
+     - either marks tasks as complete or replans if they fail
+   - for non-atomic tasks:
+     - splits them into subtasks and adds to the queue
+
+5. **key functions used**:
+   - agentic_log() for logging
+   - various is_*() functions to check task status
+   - llm.send() for interacting with the language model
+   - bash() for executing commands
+
+6. **output**:
+   - prints memory after each task to show progress
+   - provides debug output when tasks are skipped
+
+the script essentially implements an autonomous agent system that:
+- takes user prompts
+- plans and executes tasks through bash commands
+- learns from execution results
+- maintains context throughout the interaction
+- can handle both simple and complex multi-step requests
+
+the commented example at the bottom shows it could alternatively be used for simple llm interactions.

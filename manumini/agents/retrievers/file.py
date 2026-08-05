@@ -25,6 +25,7 @@ class FileRetriever:
         for _ in range(20):
             with LLM.send(self.model,rich_prompt,FileRetriever.SYSTEM_SEARCH,False) as response:
                 text = response.json().get("response","")
+                print(text)
                 path_candidates += text.replace(",","").replace("`","").replace("'","").replace('"',"").split(" ")
 
         paths = []
